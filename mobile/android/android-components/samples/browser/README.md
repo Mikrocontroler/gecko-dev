@@ -2,6 +2,8 @@
 
 ![](src/main/res/mipmap-xhdpi/ic_launcher.png)
 
+This fork is going to be modified for becoming a certain webbasd Application container
+
 A simple browser app that is composed from the browser components in this repository.
 
 ⚠️ **Note**: This sample application is only a very basic browser. For a full-featured reference browser implementation see the **[reference-browser repository](https://github.com/mozilla-mobile/reference-browser)**.
