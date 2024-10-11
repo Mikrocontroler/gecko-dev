@@ -221,19 +221,61 @@ void QuotaManagerDependencyFixture::ShutdownTemporaryStorage() {
 
 // static
 void QuotaManagerDependencyFixture::InitializeTemporaryOrigin(
-    const OriginMetadata& aOriginMetadata) {
+    const OriginMetadata& aOriginMetadata, bool aCreateIfNonExistent) {
   mozilla::ipc::PrincipalInfo principalInfo;
   ASSERT_NO_FATAL_FAILURE(
       CreateContentPrincipalInfo(aOriginMetadata.mOrigin, principalInfo));
 
   PerformOnBackgroundThread([persistenceType = aOriginMetadata.mPersistenceType,
-                             principalInfo = std::move(principalInfo)]() {
+                             principalInfo = std::move(principalInfo),
+                             aCreateIfNonExistent]() {
     QuotaManager* quotaManager = QuotaManager::Get();
     ASSERT_TRUE(quotaManager);
 
-    Await(quotaManager->InitializeTemporaryOrigin(persistenceType,
-                                                  principalInfo));
+    Await(quotaManager->InitializeTemporaryOrigin(
+        persistenceType, principalInfo, aCreateIfNonExistent));
   });
+}
+
+// static
+void QuotaManagerDependencyFixture::TemporaryOriginInitialized(
+    const OriginMetadata& aOriginMetadata, bool* aResult) {
+  ASSERT_TRUE(aResult);
+
+  mozilla::ipc::PrincipalInfo principalInfo;
+  ASSERT_NO_FATAL_FAILURE(
+      CreateContentPrincipalInfo(aOriginMetadata.mOrigin, principalInfo));
+
+  PerformOnBackgroundThread([persistenceType = aOriginMetadata.mPersistenceType,
+                             principalInfo = std::move(principalInfo),
+                             aResult]() {
+    QuotaManager* quotaManager = QuotaManager::Get();
+    ASSERT_TRUE(quotaManager);
+
+    auto value = Await(quotaManager->TemporaryOriginInitialized(persistenceType,
+                                                                principalInfo));
+    if (value.IsResolve()) {
+      *aResult = value.ResolveValue();
+    } else {
+      *aResult = false;
+    }
+  });
+}
+
+// static
+void QuotaManagerDependencyFixture::AssertTemporaryOriginInitialized(
+    const OriginMetadata& aOriginMetadata) {
+  bool result;
+  ASSERT_NO_FATAL_FAILURE(TemporaryOriginInitialized(aOriginMetadata, &result));
+  ASSERT_TRUE(result);
+}
+
+// static
+void QuotaManagerDependencyFixture::AssertTemporaryOriginNotInitialized(
+    const OriginMetadata& aOriginMetadata) {
+  bool result;
+  ASSERT_NO_FATAL_FAILURE(TemporaryOriginInitialized(aOriginMetadata, &result));
+  ASSERT_FALSE(result);
 }
 
 // static

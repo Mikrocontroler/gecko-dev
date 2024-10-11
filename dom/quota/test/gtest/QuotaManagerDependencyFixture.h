@@ -45,7 +45,14 @@ class QuotaManagerDependencyFixture : public testing::Test {
   static void AssertTemporaryStorageNotInitialized();
   static void ShutdownTemporaryStorage();
 
-  static void InitializeTemporaryOrigin(const OriginMetadata& aOriginMetadata);
+  static void InitializeTemporaryOrigin(const OriginMetadata& aOriginMetadata,
+                                        bool aCreateIfNonExistent = true);
+  static void TemporaryOriginInitialized(const OriginMetadata& aOriginMetadata,
+                                         bool* aResult);
+  static void AssertTemporaryOriginInitialized(
+      const OriginMetadata& aOriginMetadata);
+  static void AssertTemporaryOriginNotInitialized(
+      const OriginMetadata& aOriginMetadata);
   static void GetOriginUsage(const OriginMetadata& aOriginMetadata,
                              UsageInfo* aResult);
   static void GetCachedOriginUsage(const OriginMetadata& aOriginMetadata,

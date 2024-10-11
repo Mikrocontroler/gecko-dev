@@ -128,6 +128,13 @@ parent:
   async TemporaryStorageInitialized()
       returns(BoolResponse response);
 
+  async PersistentOriginInitialized(PrincipalInfo principalInfo)
+      returns(BoolResponse response);
+
+  async TemporaryOriginInitialized(PersistenceType persistenceType,
+                                   PrincipalInfo principalInfo)
+      returns(BoolResponse response);
+
   async InitializeStorage()
       returns(BoolResponse response);
 
@@ -135,7 +142,8 @@ parent:
       returns(BoolResponse response);
 
   async InitializeTemporaryOrigin(PersistenceType persistenceType,
-                                  PrincipalInfo principalInfo)
+                                  PrincipalInfo principalInfo,
+                                  bool createIfNonExistent)
       returns(BoolResponse response);
 
   async InitializePersistentClient(PrincipalInfo principalInfo,

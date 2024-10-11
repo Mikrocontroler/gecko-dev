@@ -138,6 +138,24 @@ function temporaryStorageInitialized(callback) {
   return request;
 }
 
+function persistentOriginInitialized(principal, callback) {
+  let request =
+    SpecialPowers._getQuotaManager().persistentOriginInitialized(principal);
+  request.callback = callback;
+
+  return request;
+}
+
+function temporaryOriginInitialized(persistence, principal, callback) {
+  let request = SpecialPowers._getQuotaManager().temporaryOriginInitialized(
+    persistence,
+    principal
+  );
+  request.callback = callback;
+
+  return request;
+}
+
 function init(callback) {
   let request = SpecialPowers._getQuotaManager().init();
   request.callback = callback;
@@ -160,10 +178,16 @@ function initPersistentOrigin(principal, callback) {
   return request;
 }
 
-function initTemporaryOrigin(persistence, principal, callback) {
+function initTemporaryOrigin(
+  persistence,
+  principal,
+  createIfNonExistent = true,
+  callback
+) {
   let request = SpecialPowers._getQuotaManager().initializeTemporaryOrigin(
     persistence,
-    principal
+    principal,
+    createIfNonExistent
   );
   request.callback = callback;
 
